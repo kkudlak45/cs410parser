@@ -10,41 +10,38 @@ Grammar
     5     | QUIT NEWLINE
 
     6 assignment_statement: IDENTIFIER EQUALS expression
-    7                     | secondary_expression GIVING IDENTIFIER
+    7                     | expression GIVING IDENTIFIER
 
     8 expression: value
     9           | expression PLUS expression
-   10           | expression MINUS expression
-   11           | expression MULT expression
-   12           | expression DIV expression
-   13           | LEFT_PAREN expression RIGHT_PAREN
+   10           | ADD expression TO expression
+   11           | expression MINUS expression
+   12           | SUBTRACT expression FROM expression
+   13           | expression MULT expression
+   14           | expression DIV expression
+   15           | LEFT_PAREN expression RIGHT_PAREN
 
-   14 secondary_expression: value
-   15                     | ADD secondary_expression TO secondary_expression
-   16                     | SUBTRACT secondary_expression FROM secondary_expression
-   17                     | LEFT_PAREN secondary_expression RIGHT_PAREN
-
-   18 value: NUM
-   19      | IDENTIFIER
+   16 value: NUM
+   17      | IDENTIFIER
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
     error (256)
-    NUM <num> (258) 18
-    IDENTIFIER <str> (259) 6 7 19
+    NUM <num> (258) 16
+    IDENTIFIER <str> (259) 6 7 17
     PLUS (260) 9
-    MINUS (261) 10
-    MULT (262) 11
-    DIV (263) 12
-    LEFT_PAREN (264) 13 17
-    RIGHT_PAREN (265) 13 17
+    MINUS (261) 11
+    MULT (262) 13
+    DIV (263) 14
+    LEFT_PAREN (264) 15
+    RIGHT_PAREN (265) 15
     EQUALS (266) 6
-    ADD (267) 15
-    TO (268) 15
-    SUBTRACT (269) 16
-    FROM (270) 16
+    ADD (267) 10
+    TO (268) 10
+    SUBTRACT (269) 12
+    FROM (270) 12
     GIVING (271) 7
     NEWLINE (272) 3 4 5
     QUIT (273) 5
@@ -64,14 +61,11 @@ Nonterminals, with rules where they appear
         on left: 6 7
         on right: 4
     expression <num> (23)
-        on left: 8 9 10 11 12 13
-        on right: 6 9 10 11 12 13
-    secondary_expression <num> (24)
-        on left: 14 15 16 17
-        on right: 7 15 16 17
-    value <num> (25)
-        on left: 18 19
-        on right: 8 14
+        on left: 8 9 10 11 12 13 14 15
+        on right: 6 7 9 10 11 12 13 14 15
+    value <num> (24)
+        on left: 16 17
+        on right: 8
 
 
 State 0
@@ -99,7 +93,7 @@ State 1
 
     line                  go to state 10
     assignment_statement  go to state 11
-    secondary_expression  go to state 12
+    expression            go to state 12
     value                 go to state 13
 
 
@@ -112,24 +106,24 @@ State 2
 
 State 3
 
-   18 value: NUM .
+   16 value: NUM .
 
-    $default  reduce using rule 18 (value)
+    $default  reduce using rule 16 (value)
 
 
 State 4
 
     6 assignment_statement: IDENTIFIER . EQUALS expression
-   19 value: IDENTIFIER .
+   17 value: IDENTIFIER .
 
     EQUALS  shift, and go to state 14
 
-    $default  reduce using rule 19 (value)
+    $default  reduce using rule 17 (value)
 
 
 State 5
 
-   17 secondary_expression: LEFT_PAREN . secondary_expression RIGHT_PAREN
+   15 expression: LEFT_PAREN . expression RIGHT_PAREN
 
     NUM         shift, and go to state 3
     IDENTIFIER  shift, and go to state 15
@@ -137,13 +131,13 @@ State 5
     ADD         shift, and go to state 6
     SUBTRACT    shift, and go to state 7
 
-    secondary_expression  go to state 16
-    value                 go to state 13
+    expression  go to state 16
+    value       go to state 13
 
 
 State 6
 
-   15 secondary_expression: ADD . secondary_expression TO secondary_expression
+   10 expression: ADD . expression TO expression
 
     NUM         shift, and go to state 3
     IDENTIFIER  shift, and go to state 15
@@ -151,13 +145,13 @@ State 6
     ADD         shift, and go to state 6
     SUBTRACT    shift, and go to state 7
 
-    secondary_expression  go to state 17
-    value                 go to state 13
+    expression  go to state 17
+    value       go to state 13
 
 
 State 7
 
-   16 secondary_expression: SUBTRACT . secondary_expression FROM secondary_expression
+   12 expression: SUBTRACT . expression FROM expression
 
     NUM         shift, and go to state 3
     IDENTIFIER  shift, and go to state 15
@@ -165,8 +159,8 @@ State 7
     ADD         shift, and go to state 6
     SUBTRACT    shift, and go to state 7
 
-    secondary_expression  go to state 18
-    value                 go to state 13
+    expression  go to state 18
+    value       go to state 13
 
 
 State 8
@@ -199,16 +193,24 @@ State 11
 
 State 12
 
-    7 assignment_statement: secondary_expression . GIVING IDENTIFIER
+    7 assignment_statement: expression . GIVING IDENTIFIER
+    9 expression: expression . PLUS expression
+   11           | expression . MINUS expression
+   13           | expression . MULT expression
+   14           | expression . DIV expression
 
-    GIVING  shift, and go to state 21
+    PLUS    shift, and go to state 21
+    MINUS   shift, and go to state 22
+    MULT    shift, and go to state 23
+    DIV     shift, and go to state 24
+    GIVING  shift, and go to state 25
 
 
 State 13
 
-   14 secondary_expression: value .
+    8 expression: value .
 
-    $default  reduce using rule 14 (secondary_expression)
+    $default  reduce using rule 8 (expression)
 
 
 State 14
@@ -217,38 +219,64 @@ State 14
 
     NUM         shift, and go to state 3
     IDENTIFIER  shift, and go to state 15
-    LEFT_PAREN  shift, and go to state 22
+    LEFT_PAREN  shift, and go to state 5
+    ADD         shift, and go to state 6
+    SUBTRACT    shift, and go to state 7
 
-    expression  go to state 23
-    value       go to state 24
+    expression  go to state 26
+    value       go to state 13
 
 
 State 15
 
-   19 value: IDENTIFIER .
+   17 value: IDENTIFIER .
 
-    $default  reduce using rule 19 (value)
+    $default  reduce using rule 17 (value)
 
 
 State 16
 
-   17 secondary_expression: LEFT_PAREN secondary_expression . RIGHT_PAREN
+    9 expression: expression . PLUS expression
+   11           | expression . MINUS expression
+   13           | expression . MULT expression
+   14           | expression . DIV expression
+   15           | LEFT_PAREN expression . RIGHT_PAREN
 
-    RIGHT_PAREN  shift, and go to state 25
+    PLUS         shift, and go to state 21
+    MINUS        shift, and go to state 22
+    MULT         shift, and go to state 23
+    DIV          shift, and go to state 24
+    RIGHT_PAREN  shift, and go to state 27
 
 
 State 17
 
-   15 secondary_expression: ADD secondary_expression . TO secondary_expression
+    9 expression: expression . PLUS expression
+   10           | ADD expression . TO expression
+   11           | expression . MINUS expression
+   13           | expression . MULT expression
+   14           | expression . DIV expression
 
-    TO  shift, and go to state 26
+    PLUS   shift, and go to state 21
+    MINUS  shift, and go to state 22
+    MULT   shift, and go to state 23
+    DIV    shift, and go to state 24
+    TO     shift, and go to state 28
 
 
 State 18
 
-   16 secondary_expression: SUBTRACT secondary_expression . FROM secondary_expression
+    9 expression: expression . PLUS expression
+   11           | expression . MINUS expression
+   12           | SUBTRACT expression . FROM expression
+   13           | expression . MULT expression
+   14           | expression . DIV expression
 
-    FROM  shift, and go to state 27
+    PLUS   shift, and go to state 21
+    MINUS  shift, and go to state 22
+    MULT   shift, and go to state 23
+    DIV    shift, and go to state 24
+    FROM   shift, and go to state 29
 
 
 State 19
@@ -267,217 +295,198 @@ State 20
 
 State 21
 
-    7 assignment_statement: secondary_expression GIVING . IDENTIFIER
-
-    IDENTIFIER  shift, and go to state 28
-
-
-State 22
-
-   13 expression: LEFT_PAREN . expression RIGHT_PAREN
-
-    NUM         shift, and go to state 3
-    IDENTIFIER  shift, and go to state 15
-    LEFT_PAREN  shift, and go to state 22
-
-    expression  go to state 29
-    value       go to state 24
-
-
-State 23
-
-    6 assignment_statement: IDENTIFIER EQUALS expression .
-    9 expression: expression . PLUS expression
-   10           | expression . MINUS expression
-   11           | expression . MULT expression
-   12           | expression . DIV expression
-
-    PLUS   shift, and go to state 30
-    MINUS  shift, and go to state 31
-    MULT   shift, and go to state 32
-    DIV    shift, and go to state 33
-
-    $default  reduce using rule 6 (assignment_statement)
-
-
-State 24
-
-    8 expression: value .
-
-    $default  reduce using rule 8 (expression)
-
-
-State 25
-
-   17 secondary_expression: LEFT_PAREN secondary_expression RIGHT_PAREN .
-
-    $default  reduce using rule 17 (secondary_expression)
-
-
-State 26
-
-   15 secondary_expression: ADD secondary_expression TO . secondary_expression
-
-    NUM         shift, and go to state 3
-    IDENTIFIER  shift, and go to state 15
-    LEFT_PAREN  shift, and go to state 5
-    ADD         shift, and go to state 6
-    SUBTRACT    shift, and go to state 7
-
-    secondary_expression  go to state 34
-    value                 go to state 13
-
-
-State 27
-
-   16 secondary_expression: SUBTRACT secondary_expression FROM . secondary_expression
-
-    NUM         shift, and go to state 3
-    IDENTIFIER  shift, and go to state 15
-    LEFT_PAREN  shift, and go to state 5
-    ADD         shift, and go to state 6
-    SUBTRACT    shift, and go to state 7
-
-    secondary_expression  go to state 35
-    value                 go to state 13
-
-
-State 28
-
-    7 assignment_statement: secondary_expression GIVING IDENTIFIER .
-
-    $default  reduce using rule 7 (assignment_statement)
-
-
-State 29
-
-    9 expression: expression . PLUS expression
-   10           | expression . MINUS expression
-   11           | expression . MULT expression
-   12           | expression . DIV expression
-   13           | LEFT_PAREN expression . RIGHT_PAREN
-
-    PLUS         shift, and go to state 30
-    MINUS        shift, and go to state 31
-    MULT         shift, and go to state 32
-    DIV          shift, and go to state 33
-    RIGHT_PAREN  shift, and go to state 36
-
-
-State 30
-
     9 expression: expression PLUS . expression
 
     NUM         shift, and go to state 3
     IDENTIFIER  shift, and go to state 15
-    LEFT_PAREN  shift, and go to state 22
+    LEFT_PAREN  shift, and go to state 5
+    ADD         shift, and go to state 6
+    SUBTRACT    shift, and go to state 7
 
-    expression  go to state 37
-    value       go to state 24
-
-
-State 31
-
-   10 expression: expression MINUS . expression
-
-    NUM         shift, and go to state 3
-    IDENTIFIER  shift, and go to state 15
-    LEFT_PAREN  shift, and go to state 22
-
-    expression  go to state 38
-    value       go to state 24
+    expression  go to state 30
+    value       go to state 13
 
 
-State 32
+State 22
 
-   11 expression: expression MULT . expression
+   11 expression: expression MINUS . expression
 
     NUM         shift, and go to state 3
     IDENTIFIER  shift, and go to state 15
-    LEFT_PAREN  shift, and go to state 22
+    LEFT_PAREN  shift, and go to state 5
+    ADD         shift, and go to state 6
+    SUBTRACT    shift, and go to state 7
 
-    expression  go to state 39
-    value       go to state 24
+    expression  go to state 31
+    value       go to state 13
 
 
-State 33
+State 23
 
-   12 expression: expression DIV . expression
+   13 expression: expression MULT . expression
 
     NUM         shift, and go to state 3
     IDENTIFIER  shift, and go to state 15
-    LEFT_PAREN  shift, and go to state 22
+    LEFT_PAREN  shift, and go to state 5
+    ADD         shift, and go to state 6
+    SUBTRACT    shift, and go to state 7
 
-    expression  go to state 40
-    value       go to state 24
-
-
-State 34
-
-   15 secondary_expression: ADD secondary_expression TO secondary_expression .
-
-    $default  reduce using rule 15 (secondary_expression)
+    expression  go to state 32
+    value       go to state 13
 
 
-State 35
+State 24
 
-   16 secondary_expression: SUBTRACT secondary_expression FROM secondary_expression .
+   14 expression: expression DIV . expression
 
-    $default  reduce using rule 16 (secondary_expression)
+    NUM         shift, and go to state 3
+    IDENTIFIER  shift, and go to state 15
+    LEFT_PAREN  shift, and go to state 5
+    ADD         shift, and go to state 6
+    SUBTRACT    shift, and go to state 7
+
+    expression  go to state 33
+    value       go to state 13
 
 
-State 36
+State 25
 
-   13 expression: LEFT_PAREN expression RIGHT_PAREN .
+    7 assignment_statement: expression GIVING . IDENTIFIER
 
-    $default  reduce using rule 13 (expression)
+    IDENTIFIER  shift, and go to state 34
 
 
-State 37
+State 26
+
+    6 assignment_statement: IDENTIFIER EQUALS expression .
+    9 expression: expression . PLUS expression
+   11           | expression . MINUS expression
+   13           | expression . MULT expression
+   14           | expression . DIV expression
+
+    PLUS   shift, and go to state 21
+    MINUS  shift, and go to state 22
+    MULT   shift, and go to state 23
+    DIV    shift, and go to state 24
+
+    $default  reduce using rule 6 (assignment_statement)
+
+
+State 27
+
+   15 expression: LEFT_PAREN expression RIGHT_PAREN .
+
+    $default  reduce using rule 15 (expression)
+
+
+State 28
+
+   10 expression: ADD expression TO . expression
+
+    NUM         shift, and go to state 3
+    IDENTIFIER  shift, and go to state 15
+    LEFT_PAREN  shift, and go to state 5
+    ADD         shift, and go to state 6
+    SUBTRACT    shift, and go to state 7
+
+    expression  go to state 35
+    value       go to state 13
+
+
+State 29
+
+   12 expression: SUBTRACT expression FROM . expression
+
+    NUM         shift, and go to state 3
+    IDENTIFIER  shift, and go to state 15
+    LEFT_PAREN  shift, and go to state 5
+    ADD         shift, and go to state 6
+    SUBTRACT    shift, and go to state 7
+
+    expression  go to state 36
+    value       go to state 13
+
+
+State 30
 
     9 expression: expression . PLUS expression
     9           | expression PLUS expression .
-   10           | expression . MINUS expression
-   11           | expression . MULT expression
-   12           | expression . DIV expression
+   11           | expression . MINUS expression
+   13           | expression . MULT expression
+   14           | expression . DIV expression
 
-    MULT  shift, and go to state 32
-    DIV   shift, and go to state 33
+    MULT  shift, and go to state 23
+    DIV   shift, and go to state 24
 
     $default  reduce using rule 9 (expression)
 
 
-State 38
+State 31
 
     9 expression: expression . PLUS expression
-   10           | expression . MINUS expression
-   10           | expression MINUS expression .
-   11           | expression . MULT expression
-   12           | expression . DIV expression
+   11           | expression . MINUS expression
+   11           | expression MINUS expression .
+   13           | expression . MULT expression
+   14           | expression . DIV expression
 
-    MULT  shift, and go to state 32
-    DIV   shift, and go to state 33
-
-    $default  reduce using rule 10 (expression)
-
-
-State 39
-
-    9 expression: expression . PLUS expression
-   10           | expression . MINUS expression
-   11           | expression . MULT expression
-   11           | expression MULT expression .
-   12           | expression . DIV expression
+    MULT  shift, and go to state 23
+    DIV   shift, and go to state 24
 
     $default  reduce using rule 11 (expression)
 
 
-State 40
+State 32
 
     9 expression: expression . PLUS expression
-   10           | expression . MINUS expression
-   11           | expression . MULT expression
-   12           | expression . DIV expression
-   12           | expression DIV expression .
+   11           | expression . MINUS expression
+   13           | expression . MULT expression
+   13           | expression MULT expression .
+   14           | expression . DIV expression
+
+    $default  reduce using rule 13 (expression)
+
+
+State 33
+
+    9 expression: expression . PLUS expression
+   11           | expression . MINUS expression
+   13           | expression . MULT expression
+   14           | expression . DIV expression
+   14           | expression DIV expression .
+
+    $default  reduce using rule 14 (expression)
+
+
+State 34
+
+    7 assignment_statement: expression GIVING IDENTIFIER .
+
+    $default  reduce using rule 7 (assignment_statement)
+
+
+State 35
+
+    9 expression: expression . PLUS expression
+   10           | ADD expression TO expression .
+   11           | expression . MINUS expression
+   13           | expression . MULT expression
+   14           | expression . DIV expression
+
+    MULT  shift, and go to state 23
+    DIV   shift, and go to state 24
+
+    $default  reduce using rule 10 (expression)
+
+
+State 36
+
+    9 expression: expression . PLUS expression
+   11           | expression . MINUS expression
+   12           | SUBTRACT expression FROM expression .
+   13           | expression . MULT expression
+   14           | expression . DIV expression
+
+    MULT  shift, and go to state 23
+    DIV   shift, and go to state 24
 
     $default  reduce using rule 12 (expression)

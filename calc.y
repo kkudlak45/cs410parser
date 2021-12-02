@@ -28,11 +28,12 @@ void show_all_vars(void);
 %token NEWLINE QUIT
 
 %left PLUS MINUS
+%left TO FROM
 %left MULT DIV
+%left EQUALS GIVING
 
 %type<str> assignment_statement
 %type<num> expression
-%type<num> secondary_expression
 %type<num> value
 
 %start calculation
@@ -49,21 +50,17 @@ line: NEWLINE
 ;
 
 assignment_statement: IDENTIFIER EQUALS expression { identifier_map[$1 - 'A'] = $3; $$ = $1; }
-	| secondary_expression GIVING IDENTIFIER { identifier_map[$3 - 'A'] = $1; $$ = $3; }
+	| expression GIVING IDENTIFIER { identifier_map[$3 - 'A'] = $1; $$ = $3; }
 ;
 
 expression: value				{ $$ = $1; }
 	  | expression PLUS  expression	{ $$ = $1 + $3; }
+	  | ADD expression TO expression { $$ = $4 + $2; }
 	  | expression MINUS expression	{ $$ = $1 - $3; }
+	  | SUBTRACT expression FROM expression { $$ = $4 - $2; }
 	  | expression MULT  expression	{ $$ = $1 * $3; }
 	  | expression DIV   expression { $$ = $1 / $3; }
 	  | LEFT_PAREN expression RIGHT_PAREN		{ $$ = $2; }
-;
-
-secondary_expression: value
-	  | ADD secondary_expression TO secondary_expression { $$ = $4 + $2; }
-	  | SUBTRACT secondary_expression FROM secondary_expression { $$ = $4 - $2; }
-	  | LEFT_PAREN secondary_expression RIGHT_PAREN { $$ = $2; }
 ;
 
 value: NUM          { $$ = $1;}

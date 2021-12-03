@@ -22,14 +22,13 @@ void show_all_vars(void);
 %token<num> NUM
 %token<str> IDENTIFIER
 
-%token PLUS MINUS MULT DIV LEFT_PAREN RIGHT_PAREN EQUALS
+%token PLUS MINUS LEFT_PAREN RIGHT_PAREN EQUALS
 %token ADD TO SUBTRACT FROM
 %token GIVING
 %token NEWLINE QUIT
 
 %left PLUS MINUS
 %left TO FROM
-%left MULT DIV
 %left EQUALS GIVING
 
 %type<str> assignment_statement
@@ -53,14 +52,12 @@ assignment_statement: IDENTIFIER EQUALS expression { identifier_map[$1 - 'A'] = 
 	| expression GIVING IDENTIFIER { identifier_map[$3 - 'A'] = $1; $$ = $3; }
 ;
 
-expression: value				{ $$ = $1; }
-	  | expression PLUS  expression	{ $$ = $1 + $3; }
-	  | ADD expression TO expression { $$ = $4 + $2; }
-	  | expression MINUS expression	{ $$ = $1 - $3; }
-	  | SUBTRACT expression FROM expression { $$ = $4 - $2; }
-	  | expression MULT  expression	{ $$ = $1 * $3; }
-	  | expression DIV   expression { $$ = $1 / $3; }
-	  | LEFT_PAREN expression RIGHT_PAREN		{ $$ = $2; }
+expression: value				             { $$ = $1; }
+	  | expression PLUS  expression	         { $$ = $1 + $3; }
+	  | ADD expression TO expression         { $$ = $4 + $2; }
+	  | expression MINUS expression	         { $$ = $1 - $3; }
+	  | SUBTRACT expression FROM expression  { $$ = $4 - $2; }
+	  | LEFT_PAREN expression RIGHT_PAREN	 { $$ = $2; }
 ;
 
 value: NUM          { $$ = $1;}

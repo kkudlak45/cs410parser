@@ -18,8 +18,6 @@
 \n		{return NEWLINE;}
 "+"		{return PLUS;}
 "-"		{return MINUS;}
-"*"		{return MULT;}
-"/"		{return DIV;}
 "("		{return LEFT_PAREN;}
 ")"		{return RIGHT_PAREN;}
 "="     {return EQUALS;}

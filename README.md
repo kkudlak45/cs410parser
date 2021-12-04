@@ -1,10 +1,17 @@
-A small example of a calculator written with flex / bison.
+This project is the completed second assignment for CS 410 - Compiler Construction at WVU. This code must requires the programs flex and bison in order to execute. It is recommended to install the LOUD VM located at https://lcseesystems.wvu.edu/services/loud. This VM can be opened using Virtual Box. Once inside the VM, run the following commands to install flex and bison:
 
-In order to compile with the Makefile, run:
+```
+sudo apt install flex
+sudo apt install bison
+```
 
-`make`
+With flex and bison installed, this project can be compiled using the Makefile with the following command:
 
-If you would prefer to execute it manually, run:
+```
+make
+````
+
+If you would prefer to execute it without the Makefile, instead run:
 
 ```
 bison -d calc.y

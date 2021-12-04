@@ -1,0 +1,29 @@
+The grammar used to parse the input given to this program is as follows:
+
+
+
+assignment_statement -> <identifier> = <expression>
+					  | <expression> GIVING <identifier>
+
+expression -> <value>
+			| <expression> + <expression>
+			| ADD <expression> TO <expression>
+			| <expression> - <expression>
+			| SUBTRACT <expression> FROM <expression>
+			| ( <expression> )
+
+value -> 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 
+	   | <identifier>
+
+identifier -> A | B | C | D | E
+
+
+
+This grammar can process sentences such as:
+	A = 4 + C
+	B = ADD A TO 1
+	A + 4 GIVING C
+	SUBTRACT (1 + 2) FROM 6 GIVING E
+and more.
+
+You will note if you read my .y file that the grammar used is not necessarily exactly as stated here. In particular, there are two productions for the nonterminals <calculation> and <line> which allow the program to function better at runtime. I neglected to include these productions because they do not necessarily relate to the interpretation of the sentences to be processed. Rather, these productions simply allow for smoother input processing as well as allow for the 'q' key to be entered in order to terminate execution of the program and output the values of each of the variables. 

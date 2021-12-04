@@ -30,3 +30,5 @@ Alternatively, if you would like to execute it using the set of given inputs to 
 ```
 cat inputs.txt | ./calc
 ```
+
+***PLEASE NOTE***: If you are executing the program without the input file, you *MUST* enter the 'q' key in order to terminate execution and have the values of each of the variables printed to the screen. There is a special production statement for 'q' followed by a newline ('\n') that will terminate execution of the program and call a function to display the values of each of the variables.

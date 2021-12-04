@@ -11,11 +11,22 @@ With flex and bison installed, this project can be compiled using the Makefile w
 make
 ````
 
-If you would prefer to execute it without the Makefile, instead run:
+If you would prefer to compile it without the Makefile, instead run:
 
 ```
 bison -d calc.y
 flex calc.l
 gcc calc.tab.c lex.yy.c -o calc -lm
+```
+
+Once the program is compiled, it can be executed with the following command:
+
+```
 ./calc
+```
+
+Alternatively, if you would like to execute it using the set of given inputs to test the assignment from the assignment doc, execute by running:
+
+```
+cat inputs.txt | ./calc
 ```
